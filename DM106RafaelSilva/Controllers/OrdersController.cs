@@ -24,9 +24,9 @@ namespace DM106RafaelSilva.Controllers
 
         // GET: api/Orders
         [Authorize(Roles = "ADMIN")]
-        public IQueryable<Order> GetOrders()
+        public List<Order> GetOrders()
         {
-            return db.Orders;
+            return db.Orders.Include(order => order.OrderItems).ToList();
         }
 
         // GET: api/Orders/5
@@ -54,10 +54,9 @@ namespace DM106RafaelSilva.Controllers
                 return BadRequest("Orders not found for this User");
             
             if (!CheckUser(orders.First().UserName))
-                return Ok(orders);
-            
-            return Unauthorized();
-            
+                return Unauthorized();
+
+            return Ok(orders.Include(order => order.OrderItems).ToList());
         }
 
         // PUT: api/Orders/5
